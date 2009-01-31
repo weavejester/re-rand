@@ -33,11 +33,19 @@
 
 (def repeat-limit 20)
 
+(def escaped
+  (attach
+    (match #"\\(.)")
+    (fn [[_ char]]
+      (cond
+        (= char "d") #(rnd-choice (char-range "0" "9"))
+        (= char "s") #(rnd-choice " \t\n\f\r")
+        :otherwise    (constantly char)))))
+
 (def literal
   (attach
-     (match #"(\\.|[^{}.+*()\[\]^$])+")
-     (fn [[m _]]
-       (constantly (.replace m "\\" "")))))
+     (match #"[^\\{}.+*()\[\]^$]")
+     constantly))
 
 (def any-char
   (attach
@@ -74,19 +82,8 @@
       (let [chars (get-char-list char-groups (seq invert?))]
         #(rnd-choice chars)))))
 
-(def digit
-  (attach
-    (match #"\\d")
-    (fn [_] #(rnd-choice (char-range "0" "9")))))
-
-(def whitespace
-  (attach
-    (match #"\\s")
-    (fn [_] #(rnd-choice " \t\n\f\r"))))
-
 (def single
-  (choice digit
-          whitespace
+  (choice escaped
           any-char
           char-class
           literal))
