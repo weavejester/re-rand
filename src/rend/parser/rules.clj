@@ -42,7 +42,8 @@
   (concat
     (char-range "A" "Z")
     (char-range "a" "z")
-    (char-range "0" "9")))
+    (char-range "0" "9")
+    "_-/+*=%()[]{}!?:;,."))
 
 (def repeat-limit 20)
 
