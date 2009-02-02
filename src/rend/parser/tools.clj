@@ -52,3 +52,8 @@
       (if-let [[x src] (rule src)]
         (recur (conj xs x) src)
         [xs src]))))
+
+(defmacro forward
+  "Use a rule from a var that has yet to be defined."
+  [rule]
+  `(fn [src#] (~rule src#)))

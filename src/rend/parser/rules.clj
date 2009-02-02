@@ -44,8 +44,8 @@
 
 (def literal
   (attach
-     (match #"[^\\{}.+*()\[\]^$]")
-     constantly))
+    (match #"[^\\{}.+*()\[\]^$]")
+    constantly))
 
 (def any-char
   (attach
@@ -82,8 +82,20 @@
       (let [chars (get-char-list char-groups (seq invert?))]
         #(rnd-choice chars)))))
 
+(declare pattern)
+
+(def sub-pattern
+  (attach
+    (series
+      (match #"\(")
+      (forward pattern)
+      (match #"\)"))
+    (fn [[_ fs _]]
+      #(apply str (map apply fs)))))
+
 (def single
   (choice escaped
+          sub-pattern
           any-char
           char-class
           literal))
@@ -112,9 +124,10 @@
       #(apply str
          (rnd-seq f (parse-int n) (parse-int m))))))
 
-(def regex
-  (many (choice zero-or-more
-                one-or-more
-                exactly-n
-                between-n-and-m
-                single)))
+(def pattern
+  (many
+    (choice zero-or-more
+            one-or-more
+            exactly-n
+            between-n-and-m
+            single)))

@@ -3,6 +3,6 @@
 
 (defn rend
   [re]
-  (let [[parsed remainder] (regex (str re))]
+  (let [[parsed remainder] (pattern (str re))]
     (if (empty? remainder)
       (apply str (map apply parsed)))))
