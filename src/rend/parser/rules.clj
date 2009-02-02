@@ -38,12 +38,26 @@
     (range (int (first from))
            (inc (int (first to))))))
 
-(def valid-any-chars
+(def digits
+  (char-range "0" "9"))
+
+(def whitespace
+  " \t\n\f\r")
+
+(def alphanumeric
   (concat
     (char-range "A" "Z")
     (char-range "a" "z")
-    (char-range "0" "9")
-    "_-/+*=%()[]{}!?:;,."))
+    digits))
+
+(def valid-any-chars
+  (concat
+    alphanumeric
+    "_-/+*=%()[]{}!?:;,. \t\n"))
+
+(defn invert
+  [chars]
+  (difference (set valid-any-chars) (set chars)))
 
 (def repeat-limit 20)
 
@@ -52,8 +66,12 @@
     (match #"\\(.)")
     (fn [[_ char]]
       (cond
-        (= char "d") #(rnd-choice (char-range "0" "9"))
-        (= char "s") #(rnd-choice " \t\n\f\r")
+        (= char "d") #(rnd-choice digits)
+        (= char "s") #(rnd-choice whitespace)
+        (= char "w") #(rnd-choice alphanumeric)
+        (= char "D") #(rnd-choice (invert digits))
+        (= char "S") #(rnd-choice (invert whitespace))
+        (= char "W") #(rnd-choice (invert alphanumeric))
         :otherwise    (constantly char)))))
 
 (def literal
@@ -82,7 +100,7 @@
   [char-groups invert?]
   (let [chars (apply concat char-groups)]
     (if invert?
-      (difference (set valid-any-chars) (set chars))
+      (invert chars)
       chars)))
 
 (def char-class
