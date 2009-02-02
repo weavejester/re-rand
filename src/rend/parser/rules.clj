@@ -26,7 +26,7 @@
 
 (defn rnd-seq
   [f min max]
-  (take-fn (+ (rand-int (- max min)) min) f))
+  (take-fn (+ (rand-int (- (inc max) min)) min) f))
 
 (defn parse-int
   [n]
@@ -142,6 +142,11 @@
     (series single (match #"\+"))
     (fn [[f _]] #(apply str (rnd-seq f 1 repeat-limit)))))
 
+(def zero-or-one
+  (attach
+    (series single (match #"\?"))
+    (fn [[f _]] #(apply str (rnd-seq f 0 1)))))
+
 (def exactly-n
   (attach
     (series single (match #"\{(\d+)\}"))
@@ -160,6 +165,7 @@
   (many
     (choice zero-or-more
             one-or-more
+            zero-or-one
             exactly-n
             between-n-and-m
             single)))
