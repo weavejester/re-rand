@@ -11,3 +11,5 @@ Examples
     "s9QziMg1:85592"
     => (rend #"[^0-9][0-9]")
     "i2"
+    => (rend #"b(an)+a")
+    "bananananananana"
