@@ -1,0 +1,47 @@
+<project name="rend" default="jar">
+  <description>
+    Pack all rend sources into a JAR. Compile those that can be compiled
+    standalone if the clojure.jar property points us to clojure.jar .
+  </description>
+
+  <available property="hasclojure" file="${clojure.jar}"/>
+  
+  <property name="build.dir" location="classes"/>
+  <property name="source.dir" location="src"/>
+  <property name="rend.jar" location="rend.jar"/>
+
+  <target name="clean" description="Remove generated files">
+    <delete file="${rend.jar}"/>
+    <delete dir="${build.dir}"/>
+  </target>
+
+  <target name="init" depends="clean">
+    <tstamp/>
+    <mkdir dir="${build.dir}"/>
+  </target>
+
+  <target name="compile"
+          depends="init"
+          description="Compile sources"
+          if="hasclojure">
+    <java classname="clojure.lang.Compile">
+      <classpath>
+        <path location="${build.dir}"/>
+        <path location="${source.dir}"/>
+        <path location="${clojure.jar}"/>
+      </classpath>
+      <sysproperty key="clojure.compile.path" value="${build.dir}"/>
+      <arg value="rend"/>
+      <arg value="rend.parser.rules"/>
+      <arg value="rend.parser.tools"/>
+    </java>
+  </target>
+
+  <target name="jar" description="Create jar file" depends="compile">
+    <jar jarfile="${rend.jar}">
+      <path location="LICENSE"/>
+      <fileset dir="${source.dir}" includes="**/*.clj"/>
+      <fileset dir="${build.dir}" includes="**/*.class"/>
+    </jar>
+  </target>
+</project>
