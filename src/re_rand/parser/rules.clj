@@ -61,14 +61,15 @@
   (difference (set valid-any-chars) (set chars)))
 
 (defn combine-groups
-  "Combine output groups using a function."
-  [func tokens]
+  "Combine tokens into groups, using a function to determine how to merge two
+  adjacent groups."
+  [merge-func tokens]
   (reduce
     (fn [groups token]
       (if (vector? token)
         (apply vector
           (apply str (groups 0) token)
-          (func (subvec groups 1) token))
+          (merge-func (subvec groups 1) token))
         (assoc groups 0
           (str (groups 0) token))))
     [""]
@@ -137,8 +138,7 @@
       (match #"\(")
       (forward pattern)
       (match #"\)"))
-    (fn [[_ fs _]]
-      #(apply str (map apply fs)))))
+    (fn [[_ f _]] (prn f) f)))
 
 (def single
   (choice escaped
@@ -147,40 +147,45 @@
           char-class
           literal))
 
+(defn over [x y] y)
+
 (def zero-or-more
   (attach
     (series single (match #"\*"))
-    (fn [[f _]] #(apply str (rnd-seq f 0 repeat-limit)))))
+    (fn [[f _]] #(combine-groups over (rnd-seq f 0 repeat-limit)))))
 
 (def one-or-more
   (attach
     (series single (match #"\+"))
-    (fn [[f _]] #(apply str (rnd-seq f 1 repeat-limit)))))
+    (fn [[f _]] #(combine-groups over (rnd-seq f 1 repeat-limit)))))
 
 (def zero-or-one
   (attach
     (series single (match #"\?"))
-    (fn [[f _]] #(apply str (rnd-seq f 0 1)))))
+    (fn [[f _]] #(combine-groups over (rnd-seq f 0 1)))))
 
 (def exactly-n
   (attach
     (series single (match #"\{(\d+)\}"))
     (fn [[f [_ n]]]
-      #(apply str
+      #(combine-groups over
          (take-fn (parse-int n) f)))))
 
 (def between-n-and-m
   (attach
     (series single (match #"\{(\d+),\s*(\d+)\}"))
     (fn [[f [_ n m]]]
-      #(apply str
+      #(combine-groups over
          (rnd-seq f (parse-int n) (parse-int m))))))
 
 (def pattern
-  (many
-    (choice zero-or-more
-            one-or-more
-            zero-or-one
-            exactly-n
-            between-n-and-m
-            single)))
+  (attach
+    (many
+      (choice zero-or-more
+              one-or-more
+              zero-or-one
+              exactly-n
+              between-n-and-m
+              single))
+    (fn [fs]
+      #(combine-groups into (map apply fs)))))

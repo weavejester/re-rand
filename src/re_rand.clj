@@ -16,6 +16,6 @@
 (defn re-rand
   "Returns a random string that matches the regular expression."
   [re]
-  (let [[parsed remainder] (pattern (str re))]
-    (if (empty? remainder)
-      (apply str (map apply parsed)))))
+  (let [[generator not-matched] (pattern (str re))]
+    (if (empty? not-matched)
+      (generator))))
