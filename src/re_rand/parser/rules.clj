@@ -60,6 +60,13 @@
   [chars]
   (difference (set valid-any-chars) (set chars)))
 
+(defn first-if-single
+  "If a collection has only one item, return that item."
+  [coll]
+  (if (rest coll)
+    coll
+    (first coll)))
+
 (defn combine-groups
   "Combine tokens into groups, using a function to determine how to merge two
   adjacent groups."
@@ -74,6 +81,7 @@
           (str (groups 0) token))))
     [""]
     tokens))
+
 
 (def repeat-limit 20)
 
@@ -138,7 +146,7 @@
       (match #"\(")
       (forward pattern)
       (match #"\)"))
-    (fn [[_ f _]] (prn f) f)))
+    (fn [[_ f _]] f)))
 
 (def single
   (choice escaped
@@ -147,36 +155,36 @@
           char-class
           literal))
 
-(defn over [x y] y)
+(defn combine-many
+  [tokens]
+  (first-if-single (combine-groups (fn [x y] y) tokens)))
 
 (def zero-or-more
   (attach
     (series single (match #"\*"))
-    (fn [[f _]] #(combine-groups over (rnd-seq f 0 repeat-limit)))))
+    (fn [[f _]] #(combine-many (rnd-seq f 0 repeat-limit)))))
 
 (def one-or-more
   (attach
     (series single (match #"\+"))
-    (fn [[f _]] #(combine-groups over (rnd-seq f 1 repeat-limit)))))
+    (fn [[f _]] #(combine-many (rnd-seq f 1 repeat-limit)))))
 
 (def zero-or-one
   (attach
     (series single (match #"\?"))
-    (fn [[f _]] #(combine-groups over (rnd-seq f 0 1)))))
+    (fn [[f _]] #(combine-many (rnd-seq f 0 1)))))
 
 (def exactly-n
   (attach
     (series single (match #"\{(\d+)\}"))
     (fn [[f [_ n]]]
-      #(combine-groups over
-         (take-fn (parse-int n) f)))))
+      #(combine-many (take-fn (parse-int n) f)))))
 
 (def between-n-and-m
   (attach
     (series single (match #"\{(\d+),\s*(\d+)\}"))
     (fn [[f [_ n m]]]
-      #(combine-groups over
-         (rnd-seq f (parse-int n) (parse-int m))))))
+      #(combine-many (rnd-seq f (parse-int n) (parse-int m))))))
 
 (def pattern
   (attach

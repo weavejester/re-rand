@@ -18,4 +18,4 @@
   [re]
   (let [[generator not-matched] (pattern (str re))]
     (if (empty? not-matched)
-      (generator))))
+      (first-if-single (generator)))))
