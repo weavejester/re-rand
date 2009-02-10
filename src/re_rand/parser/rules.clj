@@ -56,8 +56,23 @@
     "_-/+*=%()[]{}!?:;,. \t\n"))
 
 (defn invert
+  "Return a set of characters that do not contain any of chars."
   [chars]
   (difference (set valid-any-chars) (set chars)))
+
+(defn combine-groups
+  "Combine output groups using a function."
+  [func tokens]
+  (reduce
+    (fn [groups token]
+      (if (vector? token)
+        (apply vector
+          (apply str (groups 0) token)
+          (func (subvec groups 1) token))
+        (assoc groups 0
+          (str (groups 0) token))))
+    [""]
+    tokens))
 
 (def repeat-limit 20)
 
