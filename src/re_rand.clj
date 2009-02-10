@@ -6,14 +6,14 @@
 ;; terms of this license. You must not remove this notice, or any other, from
 ;; this software.
 
-;; rend
+;; re-rand
 ;;
 ;; Generate random strings that match the supplied regular expression.
 
-(ns rend
-  (:use rend.parser.rules))
+(ns re-rand
+  (:use re-rand.parser.rules))
 
-(defn rend
+(defn re-rand
   "Returns a random string that matches the regular expression."
   [re]
   (let [[parsed remainder] (pattern (str re))]

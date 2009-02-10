@@ -6,11 +6,11 @@
 ;; terms of this license. You must not remove this notice, or any other, from
 ;; this software.
 
-;; rend.parser.tools:
+;; re-rand.parser.tools:
 ;;
 ;; Generic functions for creating a LL recursive descent parser.
 
-(ns rend.parser.tools)
+(ns re-rand.parser.tools)
 
 (defn match
   "Create a rule to match a regular expression."

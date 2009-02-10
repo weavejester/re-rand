@@ -1,15 +1,15 @@
-Rend is a [Clojure](http://clojure.org) library for generating random strings
+re-rand is a [Clojure](http://clojure.org) library for generating random strings
 from regular expressions.
 
 Examples
 --------
 
-    => (use 'rend)
-    => (rend #"[A-Z]{4}")
+    => (use 're-rand)
+    => (re-rand #"[A-Z]{4}")
     "UTFR"
-    => (rend #".+:\d+")
+    => (re-rand #".+:\d+")
     "s9QziMg1:85592"
-    => (rend #"[^0-9][0-9]")
+    => (re-rand #"[^0-9][0-9]")
     "i2"
-    => (rend #"b(an)+a")
+    => (re-rand #"b(an)+a")
     "bananananananana"

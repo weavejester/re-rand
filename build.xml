@@ -1,6 +1,6 @@
-<project name="rend" default="jar">
+<project name="re-rand" default="jar">
   <description>
-    Pack all rend sources into a JAR. Compile those that can be compiled
+    Pack all re-rand sources into a JAR. Compile those that can be compiled
     standalone if the clojure.jar property points us to clojure.jar .
   </description>
 
@@ -8,10 +8,10 @@
   
   <property name="build.dir" location="classes"/>
   <property name="source.dir" location="src"/>
-  <property name="rend.jar" location="rend.jar"/>
+  <property name="re-rand.jar" location="re-rand.jar"/>
 
   <target name="clean" description="Remove generated files">
-    <delete file="${rend.jar}"/>
+    <delete file="${re-rand.jar}"/>
     <delete dir="${build.dir}"/>
   </target>
 
@@ -31,14 +31,14 @@
         <path location="${clojure.jar}"/>
       </classpath>
       <sysproperty key="clojure.compile.path" value="${build.dir}"/>
-      <arg value="rend"/>
-      <arg value="rend.parser.rules"/>
-      <arg value="rend.parser.tools"/>
+      <arg value="re-rand"/>
+      <arg value="re-rand.parser.rules"/>
+      <arg value="re-rand.parser.tools"/>
     </java>
   </target>
 
   <target name="jar" description="Create jar file" depends="compile">
-    <jar jarfile="${rend.jar}">
+    <jar jarfile="${re-rand.jar}">
       <path location="LICENSE"/>
       <fileset dir="${source.dir}" includes="**/*.clj"/>
       <fileset dir="${build.dir}" includes="**/*.class"/>

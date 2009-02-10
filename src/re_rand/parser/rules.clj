@@ -6,13 +6,13 @@
 ;; terms of this license. You must not remove this notice, or any other, from
 ;; this software.
 
-;; rend.parser.rules:
+;; re-rand.parser.rules:
 ;;
 ;; Rules to parse a regular expression into a series of string generating
 ;; functions.
 
-(ns rend.parser.rules
-  (:use rend.parser.tools)
+(ns re-rand.parser.rules
+  (:use re-rand.parser.tools)
   (:use [clojure.set :only (difference)]))
 
 (defn rnd-choice
