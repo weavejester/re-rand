@@ -12,4 +12,4 @@ Examples
     => (re-rand #"[^0-9][0-9]")
     "i2"
     => (re-rand #"b(an)+a")
-    "bananananananana"
+    ["bananananananana" "an"]
