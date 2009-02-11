@@ -76,7 +76,7 @@
       (if (vector? token)
         (apply vector
           (str (groups 0) (token 0))
-          (merge-func (subvec groups 1) token))
+          (merge-func (subvec groups 1) (subvec token 1)))
         (assoc groups 0
           (str (groups 0) token))))
     [""]
@@ -145,7 +145,9 @@
       (match #"\(")
       (forward pattern)
       (match #"\)"))
-    (fn [[_ f _]] f)))
+    (fn [[_ f _]]
+      #(let [s (f)]
+         (apply vector (first s) s)))))
 
 (def single
   (choice escaped
