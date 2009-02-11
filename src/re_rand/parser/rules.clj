@@ -75,13 +75,12 @@
     (fn [groups token]
       (if (vector? token)
         (apply vector
-          (apply str (groups 0) token)
+          (str (groups 0) (token 0))
           (merge-func (subvec groups 1) token))
         (assoc groups 0
           (str (groups 0) token))))
     [""]
     tokens))
-
 
 (def repeat-limit 20)
 
