@@ -63,7 +63,7 @@
 (defn first-if-single
   "If a collection has only one item, return that item."
   [coll]
-  (if (rest coll)
+  (if (next coll)
     coll
     (first coll)))
 
