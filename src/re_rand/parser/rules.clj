@@ -197,4 +197,4 @@
               between-n-and-m
               single))
     (fn [fs]
-      #(combine-groups into (map apply fs)))))
+      #(combine-groups into (map (fn [f] (f)) fs)))))
